@@ -1,5 +1,4 @@
 import e from 'express';
-import { Locals } from './Local.js';
 import { Handler as ExceptionHandler } from '../exceptions/handler.js';
 import dotenv  from 'dotenv';
 import { Routes } from './Routes.js';
@@ -40,7 +39,10 @@ export class Application {
 
     public start() { 
         this.bootUp()
+        
         const port: number = parseFloat(process.env.port);
+        const url: string = process.env.URL;
+
         this.application.use(ExceptionHandler.logErrors);
 		this.application.use(ExceptionHandler.clientErrorHandler);
 		this.application.use(ExceptionHandler.errorHandler);
@@ -48,7 +50,7 @@ export class Application {
 
 
 		this.application.listen(port, () => {
-			return console.log('\x1b[33m%s\x1b[0m', `Server :: Running @ 'http://localhost:${port}'`);
+			return console.log('\x1b[33m%s\x1b[0m', `Server :: Running @ '${url}:${port}'`);
 		}).on('error', (error) => {
 			return console.log('Error: ', error.message);
 		});

@@ -8,15 +8,15 @@ export class GoogleStrategy {
             clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
             callbackURL: '/oauth2/redirect/google',
             scope: ['profile']
-        },this.verfiy))
+        },this.verify))
     }
 
-    private static verfiy(issuer, profile, cb) {
+    private static verify(issuer, profile, cb) {
 
         database.get('SELECT * FROM federated_credentials WHERE provider = ? AND subject = ?', [
             issuer,
             profile.id
-        ], function (err, row) {
+        ], function (err, row:any) {
             if (err) { return cb(err); }
             if (!row) {
                 database.run('INSERT INTO users (name) VALUES (?)', [

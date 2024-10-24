@@ -2,7 +2,6 @@ import connectSQLite from 'connect-sqlite3'
 import session from 'express-session'
 import compression from 'compression'
 import bodyParser from 'body-parser'
-import { checkSchema } from 'express-validator';
 import cors from 'cors'
 import express,{ Application } from 'express';
 import Passport from '../providers/Passport.js';
@@ -12,9 +11,9 @@ const SQLiteStore = connectSQLite(session)
 
 class Http {
 	public static load(application: Application): Application {
-		application.use(express.static(path.join(__dirname, 'public')));
+		application.use(express.static(path.join(__dirname, '../../public')));
 		application.use(bodyParser.json({
-			limit: process.env.maxUploadLimit
+			limit: process.env.MAX_UPLOAD_LIMIT
 		}));
 
 		application.use(bodyParser.urlencoded({
@@ -25,9 +24,10 @@ class Http {
 		application.disable('x-powered-by');
 
 		
-        application.use(session({
-            store: new SQLiteStore,
-            secret: 'your secret',
+		application.use(session({
+			store: new SQLiteStore({ db: 'sessions.db', dir: './var/db' }),
+			secret: 'keyboard cat',
+			saveUninitialized: false,
             cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 week
           }));
 
