@@ -78,10 +78,11 @@ export class CacheProgram {
             } else {
 
                 const originalSend = response.send;
-                response.send = function cacheResponse(data) {
+                const write = this.write
+                response.send = async function cacheResponse(data) {
                     response.send = originalSend
                     if (response.statusCode.toString().startsWith("2")) {
-                        this.write(key, data, options).then();
+                        write(key, data, options).then();
                     }
                     return response.send(data)
                 }
