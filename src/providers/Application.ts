@@ -2,6 +2,9 @@ import e from 'express';
 import { Handler as ExceptionHandler } from '../exceptions/handler.js';
 import dotenv  from 'dotenv';
 import { Routes } from './Routes.js';
+import Http from '../middlewares/Http.js';
+import { CacheProgram } from './Cache.js';
+import logger from 'node-color-log';
 
 export class Application {
 
@@ -18,7 +21,7 @@ export class Application {
     }
 
     private loadMiddlewares() {
-        throw new Error('Method not implemented.');
+        Http.load(this.application)
     }
 
     private loadEnvironment(): void {
@@ -28,31 +31,36 @@ export class Application {
     private loadDatabaseConnection() { 
         /* Database initialization is not required as connection at a query execution time */
     }
+    private async loadCacheCapability() { 
+        await CacheProgram.load()
+    }
 
-    private bootUp() {
+    private async bootUp() {
         this.loadEnvironment();
         this.loadDatabaseConnection()
 		
         this.loadMiddlewares();
         this.loadRoutes();
+        await this.loadCacheCapability()
+
     }
 
     public start() { 
-        this.bootUp()
-        
-        const port: number = parseFloat(process.env.port);
-        const url: string = process.env.URL;
 
-        this.application.use(ExceptionHandler.logErrors);
-		this.application.use(ExceptionHandler.clientErrorHandler);
-		this.application.use(ExceptionHandler.errorHandler);
-		ExceptionHandler.loadNotFoundHandler(this.application);
+        this.bootUp().then(v => {
+            
+            const port: number = parseFloat(process.env.port);
+            const url: string = process.env.URL;
+            
+            this.application.listen(port, () => {
+                logger.success(`Server :: Running @ '${url}'`);
+            }).on('error', (error) => {
+                console.log('Error: ', error.message);
+            });
 
-
-		this.application.listen(port, () => {
-			return console.log('\x1b[33m%s\x1b[0m', `Server :: Running @ '${url}:${port}'`);
-		}).on('error', (error) => {
-			return console.log('Error: ', error.message);
-		});
+        }).catch(e => {
+            logger.error("Application boot-up failed!", e.message)
+        })
+    
     }
 }

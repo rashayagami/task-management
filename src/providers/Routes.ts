@@ -1,15 +1,13 @@
 import { Application } from "express"
-import  { routes } from "../routes/index.js"
+import  {  v1Router, v2Router } from "../routes/index.js"
 
 export class Routes{
 
     public loadApisV1(application:Application) { 
-        const apiV1Prefix = '/' + process.env.apiV1Prefix
-        application.use(apiV1Prefix, routes.v1)
+        application.use(v1Router)
     }
 
     public loadApisV2(application:Application) { 
-        const apiV2Prefix = '/' + process.env.apiV2Prefix
-        application.use(apiV2Prefix, routes.v2)
+        application.use(v2Router)
     }
 }

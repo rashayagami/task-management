@@ -14,9 +14,9 @@ export class Handler {
 	 * Handles all the not found routes
 	 */
 	public static loadNotFoundHandler(application:Application): any {
-		const apiPrefix = application.locals.env.apiPrefix;
+		const apiPrefix = process.env.API_PREFIX;
 
-		application.use('*', (req, res) => {
+		application.use('*', (err, req, res, next) => {
 			const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
 			Log.error(`Path '${req.originalUrl}' not found [IP: '${ip}']!`);
@@ -56,7 +56,7 @@ export class Handler {
 		Log.error(err.stack);
 		res.status(500);
         
-		const apiPrefix = Locals.config().apiPrefix;
+		const apiPrefix = process.env.API_PREFIX;
 		if (req.originalUrl.includes(`/${apiPrefix}/`)) {
 
 			if (err.name && err.name === 'UnauthorizedError') {

@@ -4,20 +4,20 @@ import compression from 'compression'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import express,{ Application } from 'express';
-import Passport from '../providers/Passport.js';
+import passport from '../providers/Passport.js';
 import path from 'path';
 
 const SQLiteStore = connectSQLite(session)
 
 class Http {
 	public static load(application: Application): Application {
-		application.use(express.static(path.join(__dirname, '../../public')));
+		application.use(express.static(path.join(path.resolve(), '../../public')));
 		application.use(bodyParser.json({
 			limit: process.env.MAX_UPLOAD_LIMIT
 		}));
 
 		application.use(bodyParser.urlencoded({
-			parameterLimit: parseInt(process.env.maxParameterLimit),
+			parameterLimit: parseInt(process.env.APP_MAX_PARAMETER_LIMIT),
 			extended: false
         }));
         
@@ -36,7 +36,7 @@ class Http {
         application.use(compression({ filter: (req, res) =>req.headers['x-no-compression']? false: compression.filter(req, res)} ));
 
 
-		application = Passport.bootUp(application);
+		
 
 		return application;
 	}

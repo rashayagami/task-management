@@ -3,7 +3,7 @@
  */
 
 import * as fs from 'fs';
-import * as path from 'path';
+import path from 'path';
 
 class Log {
 	public baseDir: string;
@@ -16,7 +16,7 @@ class Log {
 		let _dateString = `${this.today.getFullYear()}-${(this.today.getMonth() + 1)}-${this.today.getDate()}`;
 		let _timeString = `${this.today.getHours()}:${this.today.getMinutes()}:${this.today.getSeconds()}`;
 
-		this.baseDir = path.join(__dirname, '../../.logs/');
+		this.baseDir = path.join(path.resolve(), '../../.logs/');
 
 		this.fileName = `${_dateString}.log`;
 		this.linePrefix = `[${_dateString} ${_timeString}]`;

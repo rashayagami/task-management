@@ -1,5 +1,6 @@
 import { Application } from 'express';
 import passport from 'passport';
+import { GoogleStrategy } from '../services/auth/google.js';
 
 class Passport {
 	public bootUp (application: Application): Application {
@@ -18,16 +19,16 @@ class Passport {
             });
         });
 
-		this.loadStrategies();
+		this.loadStrategies(application);
 
 		return application;
 	}
 
-	private loadStrategies(): void {
+	private loadStrategies(application): void {
 		try {
-
+			GoogleStrategy.load(application)
         } catch (error) {
-            
+            throw error
 		}
 	}
 
