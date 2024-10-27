@@ -1,10 +1,10 @@
 import e from 'express';
-import { Handler as ExceptionHandler } from '../exceptions/handler.js';
 import dotenv  from 'dotenv';
-import { Routes } from './Routes.js';
 import Http from '../middlewares/Http.js';
 import { CacheProgram } from './Cache.js';
 import logger from 'node-color-log';
+import { router } from './Routes.js';
+import { Documentation } from './Documentation.js';
 
 export class Application {
 
@@ -15,9 +15,7 @@ export class Application {
     }
 
     private loadRoutes() {
-        const routes = new Routes()
-        routes.loadApisV1(this.application)
-        routes.loadApisV2(this.application)
+        this.application.use(router)
     }
 
     private loadMiddlewares() {
@@ -31,6 +29,9 @@ export class Application {
     private loadDatabaseConnection() { 
         /* Database initialization is not required as connection at a query execution time */
     }
+    private loadSwaggerDocumentation() { 
+        Documentation.load(this.application)
+    }
     private async loadCacheCapability() { 
         await CacheProgram.load()
     }
@@ -40,8 +41,9 @@ export class Application {
         this.loadDatabaseConnection()
 		
         this.loadMiddlewares();
+        this.loadSwaggerDocumentation()
         this.loadRoutes();
-        await this.loadCacheCapability()
+        this.loadCacheCapability();
 
     }
 
@@ -49,14 +51,20 @@ export class Application {
 
         this.bootUp().then(v => {
             
-            const port: number = parseFloat(process.env.port);
-            const url: string = process.env.URL;
+            const port: number = parseFloat(process.env.PORT || '3001');
             
-            this.application.listen(port, () => {
-                logger.success(`Server :: Running @ '${url}'`);
+            const server = this.application.listen(port, () => {
+                logger.success(`Server :: Running @ 'http://localhost:${port}'`);
             }).on('error', (error) => {
                 console.log('Error: ', error.message);
             });
+
+            process.on('SIGTERM', () => {
+                logger.debug('SIGTERM signal received: closing HTTP server')
+                server.close(() => {
+                  logger.debug('HTTP server closed')
+                })
+            })
 
         }).catch(e => {
             logger.error("Application boot-up failed!", e.message)

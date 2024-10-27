@@ -25,6 +25,7 @@ class Http {
 
 		
 		application.use(session({
+			resave:false,
 			store: new SQLiteStore({ db: 'sessions.db', dir: './var/db' }),
 			secret: 'keyboard cat',
 			saveUninitialized: false,
@@ -34,9 +35,6 @@ class Http {
 
 		application.use(cors());
         application.use(compression({ filter: (req, res) =>req.headers['x-no-compression']? false: compression.filter(req, res)} ));
-
-
-		
 
 		return application;
 	}
