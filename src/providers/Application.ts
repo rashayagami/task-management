@@ -5,6 +5,7 @@ import { CacheProgram } from './Cache.js';
 import logger from 'node-color-log';
 import { router } from './Routes.js';
 import { Documentation } from './Documentation.js';
+import { Socket } from 'dgram';
 
 export class Application {
 
@@ -58,6 +59,9 @@ export class Application {
             }).on('error', (error) => {
                 console.log('Error: ', error.message);
             });
+            server.on("connection", (socket: Socket) => {
+                console.log("connection",socket.address())
+            })
 
             process.on('SIGTERM', () => {
                 logger.debug('SIGTERM signal received: closing HTTP server')
