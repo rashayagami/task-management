@@ -1,19 +1,26 @@
 import { mkdirp } from 'mkdirp';
 import sqlite3 from 'sqlite3';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 
-class Database extends sqlite3.Database{ 
-    private db: sqlite3.Database
-    constructor() { 
-        mkdirp.sync('./var/db');
-        super('./var/db/todos.db');
-        this.bootUp()
+export class Database extends DataSource { 
+    private db: DataSource;
+    constructor(option: DataSourceOptions) { 
+        super(option)
     }
 
-    public bootUp() {
-        const db = this
-
-     }
+    public static getInstance() { 
+        return new Database({
+            type: 'sqlite',
+            database: './database.sqlite',  
+            synchronize: true,              
+            logging: true,
+            entities: [
+                'dist/database/entity/**/*.{js,ts}',
+                'src/database/entity/**/*.{js,ts}'
+            ],
+        });
+    }
+    
 }
 
-export const database = new Database();

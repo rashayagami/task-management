@@ -6,10 +6,13 @@ import logger from 'node-color-log';
 import { router } from './Routes.js';
 import { Documentation } from './Documentation.js';
 import { Socket } from 'dgram';
+import { DataSource } from 'typeorm';
+import { Database } from './Database.js';
 
-export class Application {
+export class Application  {
 
     private application: e.Application
+    private database: DataSource
 
     constructor () {
         this.application = e();
@@ -29,7 +32,10 @@ export class Application {
     
     private loadDatabaseConnection() { 
         /* Database initialization is not required as connection at a query execution time */
+        this.database = Database.getInstance()
+        this.application.set("database", this.database);
     }
+
     private loadSwaggerDocumentation() { 
         Documentation.load(this.application)
     }
@@ -74,5 +80,9 @@ export class Application {
             logger.error("Application boot-up failed!", e.message)
         })
     
+    }
+
+    public getDatabaseConn():DataSource { 
+        return this.database
     }
 }

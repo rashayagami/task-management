@@ -1,4 +1,4 @@
 import { Application } from "./providers/Application.js";
 
-const app = new Application();
-app.start()
+export const application = new Application();
+application.start()
