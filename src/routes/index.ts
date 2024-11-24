@@ -25,6 +25,7 @@ paths:
 import e, { Request, Response } from "express"
 import { Version } from "../providers/Version.js"
 import { FileHandler } from "../controllers/FileHandler/index.js"
+import { Synchronize } from "../controllers/synchronize-database/index.js"
 export const testApi = e.Router()
 
 
@@ -55,3 +56,4 @@ testApi.post("/file", FileHandler.streamProcessor, (req, res) => {
     message: "processed"
   })
 })
+testApi.post("/sync", Synchronize.sync);

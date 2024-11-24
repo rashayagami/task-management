@@ -33,10 +33,10 @@ export class Files extends BaseEntity {
   @Column('integer', { default: Status.SERVER_ONLY })
   synced: number;
 
-  @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })
+  @Column('time', { default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn({ type: 'time', default: () => 'CURRENT_TIMESTAMP' })
   updated_at: Date;
 
   @Column('uuid', { nullable: false })

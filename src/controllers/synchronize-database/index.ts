@@ -3,13 +3,13 @@ import { application } from "../../index.js";
 import { Degree, Files, Status } from "../../database/entities/Files.js";
 import { DataSource, In, MoreThan, MoreThanOrEqual, Or } from "typeorm";
 
-class Synchronize {
+export class Synchronize {
 
     public static async sync(request: Request, response: Response, next: NextFunction) {
         const databaseConn = application.getDatabaseConn()
         const database = request.app.get("database")
         const { last_synced_at, entities } = request.body
-        const { user }:any = request.headers
+        const { user_id }:any = request.headers
         const last_synced_at_server = new Date()
 
         const result = await databaseConn.getRepository(Files).createQueryBuilder('files')
@@ -19,12 +19,12 @@ class Synchronize {
             .setParameters({
                 startTime: last_synced_at,
                 endTime: last_synced_at_server,
-                user_id: user.user_id,
+                user_id: user_id,
                 global: 'global'
             })
             .getMany();
 
-        await Synchronize.insertFilesFromClient(entities,user, databaseConn)
+        await Synchronize.insertFilesFromClient(entities,user_id, databaseConn)
 
         response.status(201).json({
             entities: result,
@@ -32,7 +32,7 @@ class Synchronize {
         })
     }
 
-    private static async insertFilesFromClient(data: any[], user, databaseConn: DataSource) {
+    private static async insertFilesFromClient(data: any[], user_id, databaseConn: DataSource) {
 
         const filesToInsert: Files[] = data.map((fileData) => {
             const file = new Files();
@@ -43,14 +43,14 @@ class Synchronize {
             file.synced = Status.SERVER_ONLY;
             file.created_at = fileData.created_at;
             file.updated_at = fileData.updated_at;
-            file.last_updated_by = user.user_id;
+            file.last_updated_by = user_id;
 
             return file;
         });
 
         // Insert the files into the database
         const fileRepository = databaseConn.getRepository(Files);
-        await fileRepository.save(filesToInsert); // Save all files at once
+        await fileRepository.insert(filesToInsert); // Save all files at once
 
         console.log('Files inserted:', filesToInsert);
     }

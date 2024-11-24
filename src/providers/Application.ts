@@ -30,10 +30,16 @@ export class Application  {
         dotenv.config();
     }
     
-    private loadDatabaseConnection() { 
-        /* Database initialization is not required as connection at a query execution time */
+    private async loadDatabaseConnection() { 
         this.database = Database.getInstance()
-        this.application.set("database", this.database);
+        try { 
+            await this.database.initialize()
+            console.log("Database Initialized",this.database.isInitialized)
+            this.application.set("database", this.database);
+        } catch (error) { 
+            console.log("Database Initialization failed!!", error.message)
+            throw error
+        }
     }
 
     private loadSwaggerDocumentation() { 
@@ -45,8 +51,7 @@ export class Application  {
 
     private async bootUp() {
         this.loadEnvironment();
-        this.loadDatabaseConnection()
-		
+        await this.loadDatabaseConnection()
         this.loadMiddlewares();
         this.loadSwaggerDocumentation()
         this.loadRoutes();

@@ -1,6 +1,6 @@
 import { Application } from 'express';
 import passport from 'passport';
-import { GoogleStrategy } from '../services/auth/google.js';
+// import { GoogleStrategy } from '../services/auth/google.js';
 
 class Passport {
 	public bootUp (application: Application): Application {
@@ -26,7 +26,7 @@ class Passport {
 
 	private loadStrategies(application): void {
 		try {
-			GoogleStrategy.load(application)
+			// GoogleStrategy.load(application)
         } catch (error) {
             throw error
 		}

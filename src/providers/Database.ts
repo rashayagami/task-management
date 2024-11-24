@@ -1,7 +1,7 @@
 import { mkdirp } from 'mkdirp';
 import sqlite3 from 'sqlite3';
 import { DataSource, DataSourceOptions } from 'typeorm';
-
+import { Files } from '../database/entities/Files.js';
 
 export class Database extends DataSource { 
     private db: DataSource;
@@ -10,16 +10,16 @@ export class Database extends DataSource {
     }
 
     public static getInstance() { 
-        return new Database({
+        const database = new Database({
             type: 'sqlite',
             database: './database.sqlite',  
             synchronize: true,              
             logging: true,
             entities: [
-                'dist/database/entity/**/*.{js,ts}',
-                'src/database/entity/**/*.{js,ts}'
+                Files
             ],
-        });
+        })
+        return database
     }
     
 }

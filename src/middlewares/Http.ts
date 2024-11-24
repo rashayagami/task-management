@@ -12,14 +12,11 @@ const SQLiteStore = connectSQLite(session)
 class Http {
 	public static load(application: Application): Application {
 		application.use(express.static(path.join(path.resolve(), '../../public')));
-		application.use(bodyParser.json({
-			limit: process.env.MAX_UPLOAD_LIMIT
-		}));
 
-		application.use(bodyParser.urlencoded({
-			parameterLimit: parseInt(process.env.APP_MAX_PARAMETER_LIMIT),
-			extended: false
-        }));
+
+		application.use(express.json({limit: '50mb'}));
+		application.use(express.urlencoded({limit: '50mb'}));
+
         
 		application.disable('x-powered-by');
 
