@@ -26,6 +26,7 @@ import e, { Request, Response } from "express"
 import { Version } from "../providers/Version.js"
 import { FileHandler } from "../controllers/FileHandler/index.js"
 import { Synchronize } from "../controllers/synchronize-database/index.js"
+import { PresignedURL } from "../services/s3/index.js"
 export const testApi = e.Router()
 
 
@@ -57,3 +58,4 @@ testApi.post("/file", FileHandler.streamProcessor, (req, res) => {
   })
 })
 testApi.post("/sync", Synchronize.sync);
+testApi.post("/s3/presign", PresignedURL.handler);
