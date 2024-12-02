@@ -1,4 +1,4 @@
-import { PutObjectCommand, CreateMultipartUploadCommand, UploadPartCommand, S3Client, CompleteMultipartUploadCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, CreateMultipartUploadCommand, UploadPartCommand, S3Client, CompleteMultipartUploadCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 
 import {
     getSignedUrl,
@@ -23,6 +23,15 @@ export class PresignedUrl {
     public static async getPut({ bucket, key }) { 
         const default_bucket = process.env.AWS_BUCKET_NAME;
         const command = new PutObjectCommand({
+            Bucket: bucket || default_bucket,
+            Key: key,
+        });
+        const url = await getSignedUrl(this.getClient(),command, { expiresIn:900 });
+        return url;
+    }
+    public static async getGET({ bucket, key }) { 
+        const default_bucket = process.env.AWS_BUCKET_NAME;
+        const command = new GetObjectCommand({
             Bucket: bucket || default_bucket,
             Key: key,
         });

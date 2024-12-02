@@ -9,6 +9,9 @@ export class PresignedURL {
         let signedURL: string;
         let notFound = false
         switch (command) { 
+            case "GET":
+                signedURL = await PresignedUrl.getGET({ key, bucket })
+                break;
             case "PUT":
                 signedURL = await PresignedUrl.getPut({ key, bucket })
                 break;

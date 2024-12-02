@@ -58,4 +58,4 @@ testApi.post("/file", FileHandler.streamProcessor, (req, res) => {
   })
 })
 testApi.post("/sync", Synchronize.sync);
-testApi.post("/s3/presign", PresignedURL.handler);
+testApi.post("/s3/presigned", PresignedURL.handler);

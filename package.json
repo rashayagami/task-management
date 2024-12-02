@@ -27,6 +27,8 @@
     "typescript-eslint-parser": "^18.0.0"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.699.0",
+    "@aws-sdk/s3-request-presigner": "^3.699.0",
     "@dotenvx/dotenvx": "^1.20.1",
     "bcrypt-nodejs": "^0.0.3",
     "bull": "^4.16.3",
