@@ -7,6 +7,6 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,        
         "lib": ["ESNext"],
-        "sourceMap": true
+        // "sourceMap": true
     }
 }

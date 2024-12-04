@@ -50,6 +50,7 @@
     "object-hash": "^3.0.0",
     "passport": "^0.7.0",
     "passport-google-oidc": "^0.1.0",
+    "pg": "^8.13.1",
     "postgres": "^3.4.4",
     "redis": "^4.7.0",
     "semver": "^7.6.3",
